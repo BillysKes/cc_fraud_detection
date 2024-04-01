@@ -12,3 +12,6 @@
 ![image](https://github.com/BillysKes/cc_fraud_detection/assets/73298709/582074ad-4d77-4f38-b578-3998bed06f26)
 
 ![image](https://github.com/BillysKes/cc_fraud_detection/assets/73298709/0b210192-3b6d-44f1-84c8-4df36c2a28e8)
+
+
+![image](https://github.com/BillysKes/cc_fraud_detection/assets/73298709/9707793f-e494-4975-b102-76cf506f7723)
