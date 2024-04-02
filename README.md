@@ -41,7 +41,28 @@ freq      28794   709863                        3123        5617    94876
 count             1296675     1296675                           1296675  
 unique                494         968                           1296675  
 top     Film/video editor  1977-03-23  0b242abb623afc578575680df30655b9  
-freq                 9779        5636                                 1  
+freq                 9779        5636                                 1
+
+amt statistics for fraudulent transactions :  count    7506.000000
+mean      531.320092
+std       390.560070
+min         1.060000
+25%       245.662500
+50%       396.505000
+75%       900.875000
+max      1376.040000
+Name: amt, dtype: float64
+
+amt statistics for legitimate transactions :  count    1.289169e+06
+mean     6.766711e+01
+std      1.540080e+02
+min      1.000000e+00
+25%      9.610000e+00
+50%      4.728000e+01
+75%      8.254000e+01
+max      2.894890e+04
+Name: amt, dtype: float64
+
 ```
 
 
