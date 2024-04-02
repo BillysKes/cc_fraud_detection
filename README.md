@@ -53,6 +53,7 @@ freq                 9779        5636                                 1
 ![image](https://github.com/BillysKes/cc_fraud_detection/assets/73298709/8786de1f-4b86-40ae-b5a5-a28234d52444)
 
 ![image](https://github.com/BillysKes/cc_fraud_detection/assets/73298709/582074ad-4d77-4f38-b578-3998bed06f26)
+The high majority of cardholders spent less than 500$ per transaction.
 
 ![image](https://github.com/BillysKes/cc_fraud_detection/assets/73298709/0b210192-3b6d-44f1-84c8-4df36c2a28e8)
 
