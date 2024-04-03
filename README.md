@@ -78,7 +78,7 @@ Name: amt, dtype: float64
 
 ![image](https://github.com/BillysKes/cc_fraud_detection/assets/73298709/582074ad-4d77-4f38-b578-3998bed06f26)
 
-The high majority of cardholders spent less than 500$ per transaction.
+- The high majority of cardholders spent less than 500$ per transaction.
 
 ![image](https://github.com/BillysKes/cc_fraud_detection/assets/73298709/0b210192-3b6d-44f1-84c8-4df36c2a28e8)
 
@@ -88,7 +88,7 @@ The high majority of cardholders spent less than 500$ per transaction.
 ![image](https://github.com/BillysKes/cc_fraud_detection/assets/73298709/4dc7ed96-6ea4-4624-955f-a3216fcf954c)
 
 
-50% of the credit cards have made less than 1000 transactions on the timeframe of 18 months(1.5 years)
+- 50% of the credit cards have made less than 1000 transactions on the timeframe of 18 months(1.5 years)
 
 ![image](https://github.com/BillysKes/cc_fraud_detection/assets/73298709/1012c594-1270-44de-9b47-2b5d41157e76)
 
@@ -101,5 +101,5 @@ The high majority of cardholders spent less than 500$ per transaction.
 
 ![image](https://github.com/BillysKes/cc_fraud_detection/assets/73298709/c440f2bd-3cb9-49be-aa80-688b25bf88d4)
 
-There are significantly more fraudulent transactions happening at night and more specifically at the time between 21:00 until 04:00
+- There are significantly more fraudulent transactions happening at night and more specifically at the time between 21:00 until 04:00
 
