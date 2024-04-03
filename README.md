@@ -74,6 +74,8 @@ Name: amt, dtype: float64
 
 ![image](https://github.com/BillysKes/cc_fraud_detection/assets/73298709/e5b530a8-6413-4df9-a3de-7bc184a6dbfa)
 
+- There is a high pressence of outliers of the amt variable on the legitimate transactions.
+
 
 ![image](https://github.com/BillysKes/cc_fraud_detection/assets/73298709/582074ad-4d77-4f38-b578-3998bed06f26)
 
