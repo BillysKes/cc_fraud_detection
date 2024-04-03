@@ -101,3 +101,5 @@ The high majority of cardholders spent less than 500$ per transaction.
 
 ![image](https://github.com/BillysKes/cc_fraud_detection/assets/73298709/c440f2bd-3cb9-49be-aa80-688b25bf88d4)
 
+There are significantly more fraudulent transactions happening at night and more specifically at the time between 21:00 until 04:00
+
