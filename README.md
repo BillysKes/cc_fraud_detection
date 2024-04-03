@@ -95,3 +95,5 @@ The high majority of cardholders spent less than 500$ per transaction.
 
 ![image](https://github.com/BillysKes/cc_fraud_detection/assets/73298709/0b15096b-fc7b-4ba2-9282-85e8bb8b8f75)
 
+![image](https://github.com/BillysKes/cc_fraud_detection/assets/73298709/c440f2bd-3cb9-49be-aa80-688b25bf88d4)
+
