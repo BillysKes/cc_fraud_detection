@@ -87,6 +87,9 @@ The high majority of cardholders spent less than 500$ per transaction.
 
 ![image](https://github.com/BillysKes/cc_fraud_detection/assets/73298709/4dc7ed96-6ea4-4624-955f-a3216fcf954c)
 
+
+50% of the credit cards have made less than 1000 transactions on the timeframe of 18 months(1.5 years)
+
 ![image](https://github.com/BillysKes/cc_fraud_detection/assets/73298709/1012c594-1270-44de-9b47-2b5d41157e76)
 
 
