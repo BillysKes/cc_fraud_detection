@@ -71,7 +71,6 @@ Name: amt, dtype: float64
 
 ![image](https://github.com/BillysKes/cc_fraud_detection/assets/73298709/d81fb83a-87eb-4d88-9628-e0b312793435)
 
-![image](https://github.com/BillysKes/cc_fraud_detection/assets/73298709/8786de1f-4b86-40ae-b5a5-a28234d52444)
 
 ![image](https://github.com/BillysKes/cc_fraud_detection/assets/73298709/e5b530a8-6413-4df9-a3de-7bc184a6dbfa)
 
