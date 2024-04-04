@@ -1,5 +1,13 @@
-# cc_fraud_detection
 
+
+1. [Introduction](#Introduction)
+2. [Dataset Description](#dataset-description)
+3. [Exploratory Data Analysis (EDA)](#eda)
+   1. [Descriptive Statistics](#cleaning-python)
+   2. [Visualization of Data](#cleaning-sql)
+   3. [Feature Engineering](#feature-eng)
+4. [Model selection](#)
+5. [Conclusions](#conclusions)
 
 
 
