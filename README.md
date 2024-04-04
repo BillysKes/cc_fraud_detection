@@ -11,6 +11,12 @@
 
 
 
+
+
+
+# 3. Exploratory Data Analysis (EDA)
+
+
 ```
               cc_num         amt         zip         lat        long  \
 count  1.296675e+06  1296675.00  1296675.00  1296675.00  1296675.00   
@@ -112,4 +118,12 @@ Name: amt, dtype: float64
 ![image](https://github.com/BillysKes/cc_fraud_detection/assets/73298709/c440f2bd-3cb9-49be-aa80-688b25bf88d4)
 
 - There are significantly more fraudulent transactions happening at night and more specifically at the time between 21:00 until 04:00
+
+
+
+
+## 3.3 Feature Engineering
+
+### Transaction frequency
+
 
