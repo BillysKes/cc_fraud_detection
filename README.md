@@ -153,3 +153,32 @@ for cc_num, group in df.groupby('cc_num'):
         df.at[index, 'transaction_frequency'] = transaction_count
 ```
 
+
+
+### Transaction amount velocity
+```
+def calculate_transaction_velocity(data):
+    data.sort_values(by='trans_date_trans_time', inplace=True)
+    velocity_flags = []
+
+    for index, row in data.iterrows():
+        current_window_start = row['trans_date_trans_time'] - time_window
+        current_window_end = row['trans_date_trans_time']
+        transactions_in_window = data[(data['cc_num'] == row['cc_num']) &
+                                      (data['trans_date_trans_time'] >= current_window_start) &
+                                      (data['trans_date_trans_time'] <= current_window_end)]
+        total_amount = transactions_in_window['amt'].sum()
+        previous_month_transactions = data[(data['cc_num'] == row['cc_num']) &
+                                           (data['trans_date_trans_time'] >= current_window_start - pd.Timedelta(
+                                               days=30)) &
+                                           (data['trans_date_trans_time'] <= current_window_start)]
+        user_baseline = previous_month_transactions['amt'].mean()
+
+        if total_amount > user_baseline:
+            velocity_flags.append(1)
+        else:
+            velocity_flags.append(0)
+
+    data['transaction_velocity'] = velocity_flags
+```
+
