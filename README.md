@@ -130,4 +130,23 @@ Name: amt, dtype: float64
 
 ### Transaction frequency
 
+```
+df['trans_date_trans_time'] = pd.to_datetime(df['trans_date_trans_time'])
+df.sort_values(by=['cc_num', 'trans_date_trans_time'], inplace=True)
+df['transaction_frequency'] = 0
+first_transaction_dates = {}
+for cc_num, group in df.groupby('cc_num'):
+    first_transaction_date = group['trans_date_trans_time'].min()
+    first_transaction_dates[cc_num] = first_transaction_date
+
+    transaction_count = 0
+    for index, row in group.iterrows():
+        days_diff = (row['trans_date_trans_time'] - first_transaction_date).days
+        if days_diff is not None and days_diff > 30:
+            first_transaction_date = row['trans_date_trans_time']
+            transaction_count = 1
+        else:
+            transaction_count += 1
+        df.at[index, 'transaction_frequency'] = transaction_count
+```
 
