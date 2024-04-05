@@ -17,6 +17,7 @@
 # 3. Exploratory Data Analysis (EDA)
 
 
+## 3.1 Descriptive Statistics
 ```
               cc_num         amt         zip         lat        long  \
 count  1.296675e+06  1296675.00  1296675.00  1296675.00  1296675.00   
@@ -78,6 +79,8 @@ max      2.894890e+04
 Name: amt, dtype: float64
 
 ```
+
+## 3.2 Visualization of Data
 
 
 ![image](https://github.com/BillysKes/cc_fraud_detection/assets/73298709/cc73219e-c675-4607-9d7a-4600fbbd7ea6)
