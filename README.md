@@ -95,6 +95,10 @@ Name: amt, dtype: float64
 
 - The high majority of cardholders spent less than 500$ per transaction.
 
+
+![image](https://github.com/BillysKes/cc_fraud_detection/assets/73298709/56ce6e02-c866-45df-a413-cc49d347581d)
+  
+
 ![image](https://github.com/BillysKes/cc_fraud_detection/assets/73298709/0b210192-3b6d-44f1-84c8-4df36c2a28e8)
 
 
