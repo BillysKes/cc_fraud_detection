@@ -134,23 +134,21 @@ Name: amt, dtype: float64
 ### Transaction frequency
 
 ```
-df['trans_date_trans_time'] = pd.to_datetime(df['trans_date_trans_time'])
-df.sort_values(by=['cc_num', 'trans_date_trans_time'], inplace=True)
-df['transaction_frequency'] = 0
-first_transaction_dates = {}
-for cc_num, group in df.groupby('cc_num'):
-    first_transaction_date = group['trans_date_trans_time'].min()
-    first_transaction_dates[cc_num] = first_transaction_date
+def calculate_transaction_frequency(data):
+    data.sort_values(by='trans_date_trans_time', inplace=True)
 
-    transaction_count = 0
-    for index, row in group.iterrows():
-        days_diff = (row['trans_date_trans_time'] - first_transaction_date).days
-        if days_diff is not None and days_diff > 30:
-            first_transaction_date = row['trans_date_trans_time']
-            transaction_count = 1
-        else:
-            transaction_count += 1
-        df.at[index, 'transaction_frequency'] = transaction_count
+    data['transactions_count'] = data.groupby('cc_num').apply(
+        lambda x: x.rolling(window='30D', on='trans_date_trans_time')['trans_date_trans_time'].count()).reset_index(level=0, drop=True)
+
+    data['moving_avg_transaction_count'] = data.groupby('cc_num').apply(lambda x: x.rolling(window='30D',on='trans_date_trans_time')['transactions_count'].mean()).reset_index(level=0, drop=True)
+    data['std_dev_transaction_count'] = data.groupby('cc_num').apply(
+        lambda x: x.rolling(window='30D',on='trans_date_trans_time')['transactions_count'].std()).reset_index(level=0, drop=True)
+
+    data['transaction_frequency'] = ((data['transactions_count'] - data['moving_avg_transaction_count']) > (2 * data['std_dev_transaction_count'])).astype(int)
+
+    data.drop(['transactions_count', 'moving_avg_transaction_count', 'std_dev_transaction_count'], axis=1, inplace=True)
+
+    return data
 ```
 
 
