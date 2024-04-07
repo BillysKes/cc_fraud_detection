@@ -159,26 +159,16 @@ for cc_num, group in df.groupby('cc_num'):
 ```
 def calculate_transaction_velocity(data):
     data.sort_values(by='trans_date_trans_time', inplace=True)
-    velocity_flags = []
 
-    for index, row in data.iterrows():
-        current_window_start = row['trans_date_trans_time'] - time_window
-        current_window_end = row['trans_date_trans_time']
-        transactions_in_window = data[(data['cc_num'] == row['cc_num']) &
-                                      (data['trans_date_trans_time'] >= current_window_start) &
-                                      (data['trans_date_trans_time'] <= current_window_end)]
-        total_amount = transactions_in_window['amt'].sum()
-        previous_month_transactions = data[(data['cc_num'] == row['cc_num']) &
-                                           (data['trans_date_trans_time'] >= current_window_start - pd.Timedelta(
-                                               days=30)) &
-                                           (data['trans_date_trans_time'] <= current_window_start)]
-        user_baseline = previous_month_transactions['amt'].mean()
+    df['moving_avg_amt'] = df.groupby('cc_num').apply(
+        lambda x: x.rolling(window='30D', on='trans_date_trans_time')['amt'].mean()).reset_index(level=0, drop=True)
 
-        if total_amount > user_baseline:
-            velocity_flags.append(1)
-        else:
-            velocity_flags.append(0)
+    df['std_dev_amt'] = df.groupby('cc_num').apply(
+        lambda x: x.rolling(window='30D', on='trans_date_trans_time')['amt'].std()).reset_index(level=0, drop=True)
+    df['transaction_velocity'] = ((df['amt'] - df['moving_avg_amt']) > (2 * df['std_dev_amt'])).astype(int)
 
-    data['transaction_velocity'] = velocity_flags
+    data.drop(['moving_avg_amt', 'std_dev_amt'], axis=1, inplace=True)
+
+    return data
 ```
 
