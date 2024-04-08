@@ -190,3 +190,7 @@ y = df['is_fraud']
 adasyn = ADASYN()
 X_resampled, y_resampled = adasyn.fit_resample(X, y)
 ```
+![image](https://github.com/BillysKes/cc_fraud_detection/assets/73298709/ae8c2178-d120-4760-ba75-f945742ada01)
+
+
+# 5. Model selection
