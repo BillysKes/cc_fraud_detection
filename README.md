@@ -172,7 +172,7 @@ def calculate_transaction_velocity(data):
 ```
 
 
-### 4. Adaptive Synthetic Sampling (ADASYN)
+# 4. Adaptive Synthetic Sampling (ADASYN)
 
 ```
 def convert_to_unix(datetime_obj):
