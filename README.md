@@ -6,8 +6,9 @@
    1. [Descriptive Statistics](#cleaning-python)
    2. [Visualization of Data](#cleaning-sql)
    3. [Feature Engineering](#feature-eng)
-4. [Model selection](#)
-5. [Conclusions](#conclusions)
+4. [Adaptive Synthetic Sampling (ADASYN)](#adasyn)
+5. [Model selection](#)
+6. [Conclusions](#conclusions)
 
 
 
