@@ -171,3 +171,22 @@ def calculate_transaction_velocity(data):
     return data
 ```
 
+
+### 4. Adaptive Synthetic Sampling (ADASYN)
+
+```
+def convert_to_unix(datetime_obj):
+    return int(datetime_obj.timestamp())
+
+
+df['unix_timestamps'] = df['trans_date_trans_time'].apply(convert_to_unix)
+LE = LabelEncoder()
+categories = ['first', 'last', 'gender','job','street','city','state','category','merchant','trans_num']
+for label in categories:
+    df[label] = LE.fit_transform(df[label])
+
+X = df.drop(columns=['is_fraud','trans_date_trans_time','dob'])
+y = df['is_fraud']
+adasyn = ADASYN()
+X_resampled, y_resampled = adasyn.fit_resample(X, y)
+```
