@@ -139,12 +139,12 @@ Name: amt, dtype: float64
 
 ### trans_freq_flag
 
-trans_freq_flag : flags the transaction if the total number of transactions made by the credit card user deviates a lot compared to the usual(past 30 days) total number of transactions the credit card user makes
+trans_freq_flag : flags the transaction if the total number of transactions made by the credit card user deviates a lot compared to the usual(past 30 days) total number of transactions the credit card user makes.
 
 
 
 ```
-def calculate_transaction_frequency(data):
+def create_trans_freq_flag(data):
     data.sort_values(by='trans_date_trans_time', inplace=True)
 
     data['transactions_count'] = data.groupby('cc_num').apply(
@@ -161,13 +161,14 @@ def calculate_transaction_frequency(data):
     return data
 ```
 
+This function creates the trans_freq_flag feature. For every transaction made by a credit card, it calculates the 30-days moving average of the total number of transactions made(moving_avg_transaction_count) and also it calculates the standard deviation of moving_avg_transaction_count inside that 30-days window. Then it flags every transaction of the credit card where the total number of transactions made is 2 times higher than the standard deviation.
 
 
 ### trans_amt_flag
 
 trans_amt_flag : flags the transaction if the total amount of money spent with the the credit card deviates a lot compared to the usual(past 30 days) amount of money the credit card user spends
 ```
-def calculate_transaction_velocity(data):
+def create_trans_amt_flag(data):
     data.sort_values(by='trans_date_trans_time', inplace=True)
 
     df['moving_avg_amt'] = df.groupby('cc_num').apply(
