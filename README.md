@@ -137,7 +137,11 @@ Name: amt, dtype: float64
 
 ## 3.3 Feature Engineering
 
-### Transaction frequency
+### trans_freq_flag
+
+trans_freq_flag : flags the transaction if the total number of transactions made by the credit card user deviates a lot compared to the usual(past 30 days) total number of transactions the credit card user makes
+
+
 
 ```
 def calculate_transaction_frequency(data):
@@ -159,7 +163,9 @@ def calculate_transaction_frequency(data):
 
 
 
-### Transaction amount velocity
+### trans_amt_flag
+
+trans_amt_flag : flags the transaction if the total amount of money spent with the the credit card deviates a lot compared to the usual(past 30 days) amount of money the credit card user spends
 ```
 def calculate_transaction_velocity(data):
     data.sort_values(by='trans_date_trans_time', inplace=True)
