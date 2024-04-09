@@ -154,7 +154,7 @@ def calculate_transaction_frequency(data):
     data['std_dev_transaction_count'] = data.groupby('cc_num').apply(
         lambda x: x.rolling(window='30D',on='trans_date_trans_time')['transactions_count'].std()).reset_index(level=0, drop=True)
 
-    data['transaction_frequency'] = ((data['transactions_count'] - data['moving_avg_transaction_count']) > (2 * data['std_dev_transaction_count'])).astype(int)
+    data['trans_freq_flag'] = ((data['transactions_count'] - data['moving_avg_transaction_count']) > (2 * data['std_dev_transaction_count'])).astype(int)
 
     data.drop(['transactions_count', 'moving_avg_transaction_count', 'std_dev_transaction_count'], axis=1, inplace=True)
 
@@ -175,7 +175,7 @@ def calculate_transaction_velocity(data):
 
     df['std_dev_amt'] = df.groupby('cc_num').apply(
         lambda x: x.rolling(window='30D', on='trans_date_trans_time')['amt'].std()).reset_index(level=0, drop=True)
-    df['transaction_velocity'] = ((df['amt'] - df['moving_avg_amt']) > (2 * df['std_dev_amt'])).astype(int)
+    df['trans_amt_flag'] = ((df['amt'] - df['moving_avg_amt']) > (2 * df['std_dev_amt'])).astype(int)
 
     data.drop(['moving_avg_amt', 'std_dev_amt'], axis=1, inplace=True)
 
