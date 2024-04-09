@@ -17,6 +17,11 @@
 
 Credit card fraud poses significant financial risks to both consumers and financial institutions. Fraudsters continually devise new methods to exploit vulnerabilities in payment systems and so there is a pressing need for robust fraud detection mechanisms to safeguard against fraudulent activities. By analyzing patterns and anomalies within a Credit Card Transactions Fraud Detection Dataset, we aim to develop predictive models capable of identifying fraudulent transactions accurately. These models will be trained on historical data, enabling them to learn patterns indicative of fraudulent behavior and then, they will be evaluated on their ability to generalize to unseen data.
 
+
+# 2. Dataset Description
+
+The dataset utilized for this analysis contains detailed information about each credit card transactions, including transaction date and time, credit card number, merchant details, transaction amount, and geographical information. You can find more information here : https://www.kaggle.com/datasets/kartik2112/fraud-detection
+
 # 3. Exploratory Data Analysis (EDA)
 
 
