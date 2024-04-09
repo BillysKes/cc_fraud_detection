@@ -110,9 +110,8 @@ Name: amt, dtype: float64
   
 
 
-![image](https://github.com/BillysKes/cc_fraud_detection/assets/73298709/9707793f-e494-4975-b102-76cf506f7723)
+![image](https://github.com/BillysKes/cc_fraud_detection/assets/73298709/37746bca-65ee-4c02-989a-50bd7ceadea4)
 
-![image](https://github.com/BillysKes/cc_fraud_detection/assets/73298709/4dc7ed96-6ea4-4624-955f-a3216fcf954c)
 
 
 - 50% of the credit cards have made less than 1000 transactions on the timeframe of 18 months(1.5 years)
