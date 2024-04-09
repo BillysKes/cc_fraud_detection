@@ -161,7 +161,7 @@ def create_trans_freq_flag(data):
     return data
 ```
 
-This function creates the trans_freq_flag feature. For every transaction made by a credit card, it calculates the 30-days moving average of the total number of transactions made(moving_avg_transaction_count) and also it calculates the standard deviation of moving_avg_transaction_count inside that 30-days window. Then it flags every transaction of the credit card where the total number of transactions made is 2 times higher than the standard deviation.
+This function creates the trans_freq_flag feature. For every transaction made by a credit card, it calculates the 30-days moving average of the total number of transactions made(moving_avg_transaction_count) and also it calculates the standard deviation of moving_avg_transaction_count inside that 30-days window. Then it flags every transaction of the credit card where the difference of the total number of transactions and the moving average number of transactions made is 2 times higher than the standard deviation.
 
 
 ### trans_amt_flag
@@ -182,6 +182,8 @@ def create_trans_amt_flag(data):
 
     return data
 ```
+
+This function creates the trans_amt_flag feature. For every transaction made by a credit card, it calculates the 30-days moving average of the amount of money were spent and it also calculates the standard deviation of the amount of money that were spent within the past 30 days. Then it flags every transaction where the difference of the amount of the transaction and the moving average amount is 2 times higher than the standard deviation.
 
 
 # 4. Adaptive Synthetic Sampling (ADASYN)
