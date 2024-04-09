@@ -13,7 +13,9 @@
 
 
 
+# 1. Introduction
 
+Credit card fraud poses significant financial risks to both consumers and financial institutions. Fraudsters continually devise new methods to exploit vulnerabilities in payment systems and so there is a pressing need for robust fraud detection mechanisms to safeguard against fraudulent activities. By analyzing patterns and anomalies within a Credit Card Transactions Fraud Detection Dataset, we aim to develop predictive models capable of identifying fraudulent transactions accurately. These models will be trained on historical data, enabling them to learn patterns indicative of fraudulent behavior and then, they will be evaluated on their ability to generalize to unseen data.
 
 # 3. Exploratory Data Analysis (EDA)
 
