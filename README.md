@@ -206,7 +206,7 @@ y = df['is_fraud']
 adasyn = ADASYN()
 X_resampled, y_resampled = adasyn.fit_resample(X, y)
 ```
-Categorical features of the dataset are encoded as numericals with the label encoding technique before applying the algorithm. We also convert the datetime feature to unix time, which is essentially a measurement of time by the number of non-leap seconds that have elapsed since 00:00:00 UTC on 1 January 1970.
+Categorical features of the dataset are encoded as numericals with the label encoding technique before applying the algorithm. We also encode the datetime feature as unix time, which is essentially a measurement of time by the number of non-leap seconds that have elapsed since 00:00:00 UTC on 1 January 1970.
 
 ![image](https://github.com/BillysKes/cc_fraud_detection/assets/73298709/ae8c2178-d120-4760-ba75-f945742ada01)
 
