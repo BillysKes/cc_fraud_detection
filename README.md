@@ -7,7 +7,7 @@
    2. [Visualization of Data](#cleaning-sql)
    3. [Feature Engineering](#feature-eng)
 4. [Adaptive Synthetic Sampling (ADASYN)](#adasyn)
-5. [Model selection](#)
+5. [Long short-term memory(LSTM)](#)
 6. [Conclusions](#conclusions)
 
 
@@ -211,4 +211,6 @@ Categorical features of the dataset are encoded as numericals with the label enc
 ![image](https://github.com/BillysKes/cc_fraud_detection/assets/73298709/ae8c2178-d120-4760-ba75-f945742ada01)
 
 
-# 5. Model selection
+# 5. Long short-term memory(LSTM)
+
+
