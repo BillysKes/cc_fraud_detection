@@ -213,6 +213,9 @@ Categorical features of the dataset are encoded as numericals with the label enc
 
 # 5. Long short-term memory(LSTM)
 
+Long short-term memory (LSTM) network is a recurrent neural network (RNN) that deals with the vanishing gradient problem that is present in traditional RNNs, and it performs very well with sequential data. The model is been implemented with Keras. 
+
+
 ```
 selected_features = ['amt', 'merchant', 'category', 'gender', 'lat', 'long','transaction_velocity','transaction_frequency']
 data = df[selected_features]
@@ -232,26 +235,36 @@ sequence_length = 10
 X_sequences = []
 y_sequences = []
 
-for i in range(len(X) - sequence_length):
-    X_sequences.append(X[i:i+sequence_length])
-    y_sequences.append(y[i+sequence_length-1])
 
-X_sequences = np.array(X_sequences)
-y_sequences = np.array(y_sequences)
+accuracies = []  # List to store accuracies of each fold
+k = 5  # Number of folds
+kf = KFold(n_splits=k, shuffle=True)
 
-X_train, X_test_val, y_train, y_test_val = train_test_split(X_sequences, y_sequences, test_size=0.3, shuffle=False)
-X_val, X_test, y_val, y_test = train_test_split(X_test_val, y_test_val, test_size=0.5, shuffle=False)
-print("Number of samples in training set:", len(X_train))
-print("Number of samples in validation set:", len(X_val))
-print("Number of samples in test set:", len(X_test))
+for train_index, val_index in tqdm(kf.split(X_sequences), total=k):
+    X_train, X_val = X_sequences[train_index], X_sequences[val_index]
+    y_train, y_val = y_sequences[train_index], y_sequences[val_index]
 
-model = Sequential()
-model.add(LSTM(64, input_shape=(X_train.shape[1], X_train.shape[2])))
-model.add(Dense(1, activation='sigmoid'))
+    # Build and compile the model (same as before)
+    model = Sequential()
+    model.add(LSTM(64, input_shape=(X_train.shape[1], X_train.shape[2])))
+    model.add(Dense(1, activation='sigmoid'))
+    model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy'])
 
-model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy'])
-history = model.fit(X_train, y_train, epochs=10, batch_size=32, validation_data=(X_val, y_val))
-loss, accuracy = model.evaluate(X_test, y_test)
-print("Test Accuracy:", accuracy)
+    # Train the model
+    history = model.fit(X_train, y_train, epochs=10, batch_size=32, validation_data=(X_val, y_val), verbose=0)
+
+    # Evaluate the model on the validation fold
+    _, accuracy = model.evaluate(X_val, y_val)
+    accuracies.append(accuracy)
+
+# Calculate mean and standard deviation of accuracies
+mean_accuracy = np.mean(accuracies)
+std_accuracy = np.std(accuracies)
+
+print("Mean Accuracy:", mean_accuracy)
+print("Standard Deviation of Accuracy:", std_accuracy)
 ```
+
+The features are being scaled with the StandardScaler and also the model was trained for 10 epochs with a batch size of 32. Specifically, the model consists of an LSTM layer with 64 units, followed by a dense layer with a single unit and a sigmoid activation function, and it is compiled with the adam optimizer and binary cross-entropy loss function. Finally, 5-fold cross validation is used for evaluating the model performance.
+
 
