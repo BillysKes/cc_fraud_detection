@@ -260,6 +260,6 @@ print("Mean Accuracy:", mean_accuracy)
 print("Standard Deviation of Accuracy:", std_accuracy)
 ```
 
-The features are being scaled with the StandardScaler and also the model was trained for 10 epochs with a batch size of 32. Specifically, the model consists of an LSTM layer with 64 units, followed by a dense layer with a single unit and a sigmoid activation function, and it is compiled with the adam optimizer and binary cross-entropy loss function. Finally, 5-fold cross validation is used for evaluating the model performance.
+The features are being scaled with the StandardScaler and also the model was trained for 10 epochs with a batch size of 32. Specifically, the model consists of an LSTM layer with 64 units, followed by a dense layer with a single unit and a sigmoid activation function, and it is compiled with the adam optimizer and binary cross-entropy loss function. Also, the sequence length is 10, meaning that each sequence will contain 10 transactions in sequential order. Finally, 5-fold cross validation is used for evaluating the model performance.
 
 
