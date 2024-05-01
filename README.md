@@ -223,10 +223,6 @@ data = df[selected_features]
 scaler = StandardScaler()
 data[['amt', 'lat', 'long']] = scaler.fit_transform(data[['amt', 'lat', 'long']])
 
-batch_size = 32
-sequence_length = 10
-generator = TimeseriesGenerator(data.values, df['is_fraud'].values, length=sequence_length, batch_size=batch_size)
-
 X = df[selected_features].values
 y = df['is_fraud'].values
 
