@@ -217,6 +217,20 @@ Long short-term memory (LSTM) network is a recurrent neural network (RNN) that d
 
 
 ```
+def create_sequences(data, seq_length):
+    sequences = []
+    labels = []
+    cardholders = data['cc_num'].unique()
+    for cardholder in cardholders:
+        cardholder_data = data[data['cc_num'] == cardholder]
+        cardholder_data = cardholder_data.sort_values(by='timestamp')  # Ensure the data is sorted by time
+        for i in range(len(cardholder_data) - seq_length):
+            seq = cardholder_data.iloc[i:i+seq_length][['amt', 'merchant', 'category', 'gender', 'lat', 'long', 'transaction_velocity', 'transaction_frequency']].values
+            label = cardholder_data.iloc[i+seq_length]['is_fraud']
+            sequences.append(seq)
+            labels.append(label)
+    return np.array(sequences), np.array(labels)
+
 selected_features = ['amt', 'merchant', 'category', 'gender', 'lat', 'long','transaction_velocity','transaction_frequency']
 data = df[selected_features]
 
@@ -227,8 +241,8 @@ X = df[selected_features].values
 y = df['is_fraud'].values
 
 sequence_length = 10
-X_sequences = []
-y_sequences = []
+X_sequences, y_sequences = create_sequences(data, sequence_length)
+
 
 
 accuracies = []  # List to store accuracies of each fold
