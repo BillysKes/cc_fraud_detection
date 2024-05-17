@@ -221,7 +221,7 @@ selected_features = ['amt', 'merchant', 'category', 'gender', 'lat', 'long','tra
 data = df[selected_features]
 
 scaler = StandardScaler()
-data[['amt', 'lat', 'long']] = scaler.fit_transform(data[['amt', 'lat', 'long']])
+data[['amt', 'lat', 'long','merchant','category']] = StandardScaler().fit_transform(data[['amt', 'lat', 'long','merchant','category']])
 
 X = df[selected_features].values
 y = df['is_fraud'].values
