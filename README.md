@@ -223,7 +223,7 @@ def create_sequences(data, seq_length):
     cardholders = data['cc_num'].unique()
     for cardholder in cardholders:
         cardholder_data = data[data['cc_num'] == cardholder]
-        cardholder_data = cardholder_data.sort_values(by='timestamp')  # Ensure the data is sorted by time
+        cardholder_data = cardholder_data.sort_values(by='unix_timestamps')  # Ensure the data is sorted by time
         for i in range(len(cardholder_data) - seq_length):
             seq = cardholder_data.iloc[i:i+seq_length][['amt', 'merchant', 'category', 'gender', 'lat', 'long', 'transaction_velocity', 'transaction_frequency']].values
             label = cardholder_data.iloc[i+seq_length]['is_fraud']
@@ -231,34 +231,31 @@ def create_sequences(data, seq_length):
             labels.append(label)
     return np.array(sequences), np.array(labels)
 
-selected_features = ['amt', 'merchant', 'category', 'gender', 'lat', 'long','transaction_velocity','transaction_frequency']
-data = df[selected_features]
-
-scaler = StandardScaler()
-data[['amt', 'lat', 'long','merchant','category']] = StandardScaler().fit_transform(data[['amt', 'lat', 'long','merchant','category']])
-
-X = df[selected_features].values
-y = df['is_fraud'].values
-
-sequence_length = 10
+sequence_length = 50
 X_sequences, y_sequences = create_sequences(data, sequence_length)
 
+X_temp, X_holdout, y_temp, y_holdout = train_test_split(X_sequences, y_sequences, test_size=0.2, random_state=42)
 
-
-accuracies = []  # List to store accuracies of each fold
 k = 5  # Number of folds
 kf = KFold(n_splits=k, shuffle=True)
 
-for train_index, val_index in tqdm(kf.split(X_sequences), total=k):
-    X_train, X_val = X_sequences[train_index], X_sequences[val_index]
-    y_train, y_val = y_sequences[train_index], y_sequences[val_index]
+accuracies = []  # List to store accuracies of each fold
+histories = []  # List to store training histories of each fold
+
+for fold_index, (train_index, val_index) in enumerate(kf.split(X_temp), 1):
+    X_train, X_val = X_temp[train_index], X_temp[val_index]
+    y_train, y_val = y_temp[train_index], y_temp[val_index]
+
+    early_stopping_fold = EarlyStopping(monitor='val_loss', patience=3, restore_best_weights=True)
 
     model = Sequential()
     model.add(LSTM(64, input_shape=(X_train.shape[1], X_train.shape[2])))
     model.add(Dense(1, activation='sigmoid'))
     model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy'])
 
-    history = model.fit(X_train, y_train, epochs=10, batch_size=32, validation_data=(X_val, y_val), verbose=0)
+    history = model.fit(X_train, y_train, epochs=50, batch_size=32, validation_data=(X_val, y_val), callbacks=[early_stopping_fold], verbose=0)
+
+    histories.append(history)
 
     _, accuracy = model.evaluate(X_val, y_val)
     accuracies.append(accuracy)
@@ -268,6 +265,25 @@ std_accuracy = np.std(accuracies)
 
 print("Mean Accuracy:", mean_accuracy)
 print("Standard Deviation of Accuracy:", std_accuracy)
+
+final_model = Sequential()
+final_model.add(LSTM(64, input_shape=(X_temp.shape[1], X_temp.shape[2])))
+final_model.add(Dense(1, activation='sigmoid'))
+final_model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy'])
+final_model.fit(X_temp, y_temp, epochs=50, batch_size=32, verbose=0)
+
+holdout_loss, holdout_accuracy = final_model.evaluate(X_holdout, y_holdout)
+print("Hold-out Set Accuracy:", holdout_accuracy)
+
+for i, history in enumerate(histories):
+    plt.figure(figsize=(12, 6))
+    plt.plot(history.history['loss'], label='Training Loss')
+    plt.plot(history.history['val_loss'], label='Validation Loss')
+    plt.xlabel('Epochs')
+    plt.ylabel('Loss')
+    plt.title(f'Training and Validation Loss for Fold {i+1}')
+    plt.legend()
+    plt.show()
 ```
 
 The features are being scaled with the StandardScaler and also the model was trained for 10 epochs with a batch size of 32. Specifically, the model consists of an LSTM layer with 64 units, followed by a dense layer with a single unit and a sigmoid activation function, and it is compiled with the adam optimizer and binary cross-entropy loss function. Also, the sequence length is 10, meaning that each sequence will contain 10 transactions in sequential order. Finally, 5-fold cross validation is used for evaluating the model performance.
