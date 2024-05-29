@@ -285,6 +285,6 @@ print("Final Accuracy on Hold-out Set:", final_accuracy)
 
 ```
 
-The features are being scaled with the StandardScaler and also the model was trained for 10 epochs with a batch size of 32. Specifically, the model consists of an LSTM layer with 64 units, followed by a dense layer with a single unit and a sigmoid activation function, and it is compiled with the adam optimizer and binary cross-entropy loss function. Also, the sequence length is 10, meaning that each sequence will contain 10 transactions in sequential order. Finally, 5-fold cross validation is used for evaluating the model performance.
+The features are being scaled with the StandardScaler and also the model was trained for 50 epochs with a batch size of 32. Specifically, the model consists of an LSTM layer with 64 units, followed by a dense layer with a single unit and a sigmoid activation function, and it is compiled with the adam optimizer and binary cross-entropy loss function. Also, the sequence length is 10, meaning that each sequence will contain 10 transactions in sequential order, and the sequences are created so that each sequence contains transactions from a unique cardholder(cc_num) and the transactions are sorted by time. Finally, 5-fold cross validation(80% for k-fold while a seperate 20% is a holdout set) is used for evaluating the model performance and also early stopping is used to prevent overfitting. There is a seperate set called holdout set and it is used in the end for the final evaluation of the model.
 
 
