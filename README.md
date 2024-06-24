@@ -294,12 +294,5 @@ The features are being scaled with the StandardScaler and also the model was tra
 
 ![fold1](https://github.com/BillysKes/cc_fraud_detection/assets/73298709/b4df17b0-90b6-4cd4-90ab-fb874d0099a1)
 
-![fold2](https://github.com/BillysKes/cc_fraud_detection/assets/73298709/ac97ed04-46b8-44e7-a8ab-22ef842a08d2)
-
-![fold3](https://github.com/BillysKes/cc_fraud_detection/assets/73298709/2c248d73-1c53-488b-9bde-8e91c408fca4)
-
-![fold4](https://github.com/BillysKes/cc_fraud_detection/assets/73298709/4f16e7c2-331a-4fa7-88c9-37b1ca9851ac)
-
-![fold5](https://github.com/BillysKes/cc_fraud_detection/assets/73298709/c43ec89b-6174-419d-b966-e387d3a57544)
 
 
