@@ -284,7 +284,7 @@ plt.legend(loc='upper left')
 Final Accuracy on Hold-out Set: 0.9960
 ```
 
-The features are being scaled with the StandardScaler and also the model was trained for 50 epochs with a batch size of 32. Specifically, the model consists of an LSTM layer with 64 units, followed by a dense layer with a single unit and a sigmoid activation function, and it is compiled with the adam optimizer and binary cross-entropy loss function. Also, the sequence length is 10, meaning that each sequence will contain 10 transactions in sequential order, and the sequences are created so that each sequence contains transactions from a unique cardholder(cc_num) and the transactions are sorted by time. Also, early stopping is used to prevent overfitting and there is a seperate set that is used after the training, as a final evaluation of the model.
+The features are being scaled with the StandardScaler and also the model was trained with a batch size of 32 and a 60-20-20 data split ratio. Specifically, the model consists of an LSTM layer with 64 units, followed by an output layer with a single unit, and it is compiled with the adam optimizer and binary cross-entropy loss function. Also, the sequence length is 10, meaning that each sequence will contain 10 transactions in sequential order, and the sequences are created so that each sequence contains transactions from a unique cardholder(cc_num) and the transactions are sorted by time. Also, early stopping is used to prevent overfitting and there is a seperate set that is used after the training, as a final evaluation of the model.
 
 
 
