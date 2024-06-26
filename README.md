@@ -238,50 +238,45 @@ X_sequences, y_sequences = create_sequences(data, sequence_length)
 
 X_temp, X_holdout, y_temp, y_holdout = train_test_split(X_sequences, y_sequences, test_size=0.2, random_state=42)
 
-k = 5  # Number of folds
-kf = KFold(n_splits=k, shuffle=True)
-
 accuracies = []  # List to store accuracies of each fold
-histories = []  # List to store training histories of each fold
 
+# Define EarlyStopping callback
 early_stopping = EarlyStopping(monitor='val_loss', patience=3, restore_best_weights=True)
 
-for train_index, val_index in tqdm(kf.split(X_temp), total=k):
-    X_train, X_val = X_temp[train_index], X_temp[val_index]
-    y_train, y_val = y_temp[train_index], y_temp[val_index]
+# Build LSTM model
+model = Sequential()
+model.add(LSTM(64, input_shape=(X_train.shape[1], X_train.shape[2])))
+model.add(Dense(1, activation='sigmoid'))
+model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy'])
 
-    model = Sequential()
-    model.add(LSTM(64, input_shape=(X_train.shape[1], X_train.shape[2])))
-    model.add(Dense(1, activation='sigmoid'))
-    model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy'])
+# Train the model with early stopping
+history = model.fit(X_train, y_train, epochs=50, batch_size=32, validation_data=(X_val, y_val), callbacks=[early_stopping], verbose=0)
 
-    history = model.fit(X_train, y_train, epochs=50, batch_size=32, validation_data=(X_val, y_val), callbacks=[early_stopping], verbose=0)
-
-    histories.append(history)
-
-    _, accuracy = model.evaluate(X_val, y_val)
-    accuracies.append(accuracy)
-
-mean_accuracy = np.mean(accuracies)
-std_accuracy = np.std(accuracies)
-
-print("Mean Accuracy:", mean_accuracy)
-print("Standard Deviation of Accuracy:", std_accuracy)
-
-for i, history in enumerate(histories):
-    plt.figure(figsize=(12, 6))
-    plt.plot(history.history['loss'], label='Training Loss')
-    plt.plot(history.history['val_loss'], label='Validation Loss')
-    plt.xlabel('Epochs')
-    plt.ylabel('Loss')
-    plt.title(f'Training and Validation Loss for Fold {i+1}')
-    plt.legend()
-    plt.show()
-
-# Final evaluation on hold-out set
+# Evaluate the model
 final_loss, final_accuracy = model.evaluate(X_holdout, y_holdout)
 print("Final Loss on Hold-out Set:", final_loss)
 print("Final Accuracy on Hold-out Set:", final_accuracy)
+
+# Plot training history
+plt.figure(figsize=(12, 4))
+
+# Plot training & validation loss values
+plt.subplot(1, 2, 1)
+plt.plot(history.history['loss'], label='Train Loss')
+plt.plot(history.history['val_loss'], label='Val Loss')
+plt.title('Model Loss')
+plt.xlabel('Epoch')
+plt.ylabel('Loss')
+plt.legend(loc='upper right')
+
+# Plot training & validation accuracy values
+plt.subplot(1, 2, 2)
+plt.plot(history.history['accuracy'], label='Train Accuracy')
+plt.plot(history.history['val_accuracy'], label='Val Accuracy')
+plt.title('Model Accuracy')
+plt.xlabel('Epoch')
+plt.ylabel('Accuracy')
+plt.legend(loc='upper left')
 
 ```
 
@@ -290,7 +285,7 @@ Mean Accuracy: 0.9963
 Final Accuracy on Hold-out Set: 0.9960
 ```
 
-The features are being scaled with the StandardScaler and also the model was trained for 50 epochs with a batch size of 32. Specifically, the model consists of an LSTM layer with 64 units, followed by a dense layer with a single unit and a sigmoid activation function, and it is compiled with the adam optimizer and binary cross-entropy loss function. Also, the sequence length is 10, meaning that each sequence will contain 10 transactions in sequential order, and the sequences are created so that each sequence contains transactions from a unique cardholder(cc_num) and the transactions are sorted by time. Finally, 5-fold cross validation(80% for k-fold while a seperate 20% is a holdout set) is used for evaluating the model performance and also early stopping is used to prevent overfitting. There is a seperate set called holdout set and it is used in the end for the final evaluation of the model.
+The features are being scaled with the StandardScaler and also the model was trained for 50 epochs with a batch size of 32. Specifically, the model consists of an LSTM layer with 64 units, followed by a dense layer with a single unit and a sigmoid activation function, and it is compiled with the adam optimizer and binary cross-entropy loss function. Also, the sequence length is 10, meaning that each sequence will contain 10 transactions in sequential order, and the sequences are created so that each sequence contains transactions from a unique cardholder(cc_num) and the transactions are sorted by time. Also, early stopping is used to prevent overfitting and there is a seperate set that is used after the training, as a final evaluation of the model.
 
 ![fold1](https://github.com/BillysKes/cc_fraud_detection/assets/73298709/b4df17b0-90b6-4cd4-90ab-fb874d0099a1)
 
