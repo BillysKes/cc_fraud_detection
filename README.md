@@ -281,13 +281,13 @@ plt.legend(loc='upper left')
 ```
 
 ```
-Mean Accuracy: 0.9963
 Final Accuracy on Hold-out Set: 0.9960
 ```
 
 The features are being scaled with the StandardScaler and also the model was trained for 50 epochs with a batch size of 32. Specifically, the model consists of an LSTM layer with 64 units, followed by a dense layer with a single unit and a sigmoid activation function, and it is compiled with the adam optimizer and binary cross-entropy loss function. Also, the sequence length is 10, meaning that each sequence will contain 10 transactions in sequential order, and the sequences are created so that each sequence contains transactions from a unique cardholder(cc_num) and the transactions are sorted by time. Also, early stopping is used to prevent overfitting and there is a seperate set that is used after the training, as a final evaluation of the model.
 
-![fold1](https://github.com/BillysKes/cc_fraud_detection/assets/73298709/b4df17b0-90b6-4cd4-90ab-fb874d0099a1)
 
+
+![lstm_final](https://github.com/BillysKes/cc_fraud_detection/assets/73298709/a942a251-6b37-4aa7-9b7b-bb53998564ee)
 
 
