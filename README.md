@@ -292,6 +292,6 @@ The features are being scaled with the StandardScaler and also the model was tra
 
 
 
-![lstm_final](https://github.com/BillysKes/cc_fraud_detection/assets/73298709/a942a251-6b37-4aa7-9b7b-bb53998564ee)
 
+<img width="1200" height="500" alt="cc_detection_acc_loss_plots" src="https://github.com/user-attachments/assets/653be486-d239-4c5b-8192-a94e3aeb514a" />
 
