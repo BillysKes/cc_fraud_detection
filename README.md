@@ -1,13 +1,13 @@
 
 
-1. [Introduction](#Introduction)
+1. [Introduction](#introduction)
 2. [Dataset Description](#dataset-description)
 3. [Exploratory Data Analysis (EDA)](#eda)
-   1. [Descriptive Statistics](#cleaning-python)
-   2. [Visualization of Data](#cleaning-sql)
-   3. [Feature Engineering](#feature-eng)
-4. [Adaptive Synthetic Sampling (ADASYN)](#adasyn)
-5. [Long short-term memory(LSTM)](#)
+   1. [Descriptive Statistics](#descriptive-statistics)
+   2. [Visualization of Data](#visualization-of-data)
+   3. [Feature Engineering](#feature-engineering)
+4. [Time-Series Integrity & Leakage Prevention](#time-series-integrity)
+5. [Long Short-Term Memory (LSTM) Network](#lstm)
 6. [Conclusions](#conclusions)
 
 
@@ -188,29 +188,40 @@ This function creates the trans_amt_flag feature. For every transaction made by 
 
 # 4. Adaptive Synthetic Sampling (ADASYN)
 
-We apply the Adaptive Synthetic Sampling (ADASYN), which is an oversampling method that generates synthetic samples for the minority class(fraud) balancing the dataset and improving the classification accuracy.
+In highly imbalanced datasets (~1% fraud), it is common to use synthetic oversampling techniques like SMOTE or ADASYN. However, synthetic interpolation destroys chronological reality. Averaging a fraudulent transaction from Monday and Friday generates a synthetic "hallucinated" transaction on Wednesday, which corrupts the temporal sequence an LSTM relies on to learn real human behavior.  
+
+To maintain strict causal reality and prevent data leakage, this pipeline:
+
+- Drops Synthetic Interpolation: Uses native Keras class_weights during backpropagation to handle the 1% fraud imbalance rather than generating fake transaction timestamps.
+
+- Chronological Splitting: Abandons train_test_split(random_state=42) in favor of a strict chronological split (70% Train, 15% Val, 15% Test). This ensures the model is trained on past data to predict future unseen data.
+
+- Isolated Scaling: Fits the StandardScaler strictly on the training partition to ensure the model has no mathematical knowledge of the future test distribution.
 
 ```
-def convert_to_unix(datetime_obj):
-    return int(datetime_obj.timestamp())
+# 1. Chronological Sorting
+df['trans_date_trans_time'] = pd.to_datetime(df['trans_date_trans_time'])
+df.sort_values(by='trans_date_trans_time', inplace=True)
 
+# 2. Strict Chronological Split (No random shuffling)
+train_size = int(len(data) * 0.70)
+val_size = int(len(data) * 0.85)
 
-df['unix_timestamps'] = df['trans_date_trans_time'].apply(convert_to_unix)
-LE = LabelEncoder()
-categories = ['first', 'last', 'gender','job','street','city','state','category','merchant','trans_num']
-for label in categories:
-    df[label] = LE.fit_transform(df[label])
+train_data = data.iloc[:train_size].copy()
+val_data = data.iloc[train_size:val_size].copy()
+test_data = data.iloc[val_size:].copy()
 
-X = df.drop(columns=['is_fraud','trans_date_trans_time','dob'])
-y = df['is_fraud']
-adasyn = ADASYN()
-X_resampled, y_resampled = adasyn.fit_resample(X, y)
+# 3. Fit Scaler ONLY on Training Data
+columns_to_standardize = ['amt', 'lat', 'long', 'merchant', 'category']
+scaler = StandardScaler()
+
+for df_subset in [train_data, val_data, test_data]:
+    df_subset[columns_to_standardize] = df_subset[columns_to_standardize].astype(float)
+
+train_data.loc[:, columns_to_standardize] = scaler.fit_transform(train_data[columns_to_standardize])
+val_data.loc[:, columns_to_standardize] = scaler.transform(val_data[columns_to_standardize])
+test_data.loc[:, columns_to_standardize] = scaler.transform(test_data[columns_to_standardize])
 ```
-Categorical features of the dataset are encoded as numericals with the label encoding technique before applying the algorithm. We also encode the datetime feature as unix time, which is essentially a measurement of time by the number of non-leap seconds that have elapsed since 00:00:00 UTC on 1 January 1970.
-
-![image](https://github.com/BillysKes/cc_fraud_detection/assets/73298709/ae8c2178-d120-4760-ba75-f945742ada01)
-
-
 # 5. Long short-term memory(LSTM)
 
 Long short-term memory (LSTM) network is a recurrent neural network (RNN) that deals with the vanishing gradient problem that is present in traditional RNNs, and it performs very well with sequential data. The model is been implemented with Keras. 
@@ -218,30 +229,34 @@ Long short-term memory (LSTM) network is a recurrent neural network (RNN) that d
 
 ```
 
-# Function to create sequences
-def create_sequences(data, seq_length):
-    sequences = []
-    labels = []
-    cardholders = data['cc_num'].unique()
+# Function to create chronological sequences per user
+def create_sequences(df_subset, seq_length):
+    sequences, labels = [], []
+    cardholders = df_subset['cc_num'].unique()
+
     for cardholder in cardholders:
-        cardholder_data = data[data['cc_num'] == cardholder]
-        cardholder_data = cardholder_data.sort_values(by='unix_timestamps')  # Ensure the data is sorted by time
+        cardholder_data = df_subset[df_subset['cc_num'] == cardholder]
+        if len(cardholder_data) <= seq_length:
+            continue
+
         for i in range(len(cardholder_data) - seq_length):
-            seq = cardholder_data.iloc[i:i+seq_length][['amt', 'merchant', 'category', 'gender', 'lat', 'long', 'transaction_velocity', 'transaction_frequency']].values
-            label = cardholder_data.iloc[i+seq_length]['is_fraud']
+            seq = cardholder_data.iloc[i:i + seq_length][
+                ['amt', 'merchant', 'category', 'gender', 'lat', 'long', 'transaction_velocity',
+                 'transaction_frequency']].values
+            label = cardholder_data.iloc[i + seq_length]['is_fraud']
             sequences.append(seq)
             labels.append(label)
+
     return np.array(sequences), np.array(labels)
 
 sequence_length = 10
-X_sequences, y_sequences = create_sequences(data, sequence_length)
+X_train, y_train = create_sequences(train_data, sequence_length)
+X_val, y_val = create_sequences(val_data, sequence_length)
+X_test, y_test = create_sequences(test_data, sequence_length)
 
-X_temp, X_holdout, y_temp, y_holdout = train_test_split(X_sequences, y_sequences, test_size=0.2, random_state=42)
-
-accuracies = []  # List to store accuracies of each fold
-
-# Define EarlyStopping callback
-early_stopping = EarlyStopping(monitor='val_loss', patience=3, restore_best_weights=True)
+# Native handling of class imbalance
+weights = compute_class_weight('balanced', classes=np.unique(y_train), y=y_train)
+class_weights = dict(enumerate(weights))
 
 # Build LSTM model
 model = Sequential()
@@ -249,39 +264,28 @@ model.add(LSTM(64, input_shape=(X_train.shape[1], X_train.shape[2])))
 model.add(Dense(1, activation='sigmoid'))
 model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy'])
 
-# Train the model with early stopping
-history = model.fit(X_train, y_train, epochs=50, batch_size=32, validation_data=(X_val, y_val), callbacks=[early_stopping], verbose=0)
+early_stopping = EarlyStopping(monitor='val_loss', patience=3, restore_best_weights=True)
 
-# Evaluate the model
-final_loss, final_accuracy = model.evaluate(X_holdout, y_holdout)
-print("Final Loss on Hold-out Set:", final_loss)
-print("Final Accuracy on Hold-out Set:", final_accuracy)
+# Train the model
+history = model.fit(
+    X_train, y_train,
+    epochs=50,
+    batch_size=32,
+    validation_data=(X_val, y_val),
+    class_weight=class_weights,  
+    callbacks=[early_stopping],
+    verbose=1
+)
 
-# Plot training history
-plt.figure(figsize=(12, 4))
-
-# Plot training & validation loss values
-plt.subplot(1, 2, 1)
-plt.plot(history.history['loss'], label='Train Loss')
-plt.plot(history.history['val_loss'], label='Val Loss')
-plt.title('Model Loss')
-plt.xlabel('Epoch')
-plt.ylabel('Loss')
-plt.legend(loc='upper right')
-
-# Plot training & validation accuracy values
-plt.subplot(1, 2, 2)
-plt.plot(history.history['accuracy'], label='Train Accuracy')
-plt.plot(history.history['val_accuracy'], label='Val Accuracy')
-plt.title('Model Accuracy')
-plt.xlabel('Epoch')
-plt.ylabel('Accuracy')
-plt.legend(loc='upper left')
+# Evaluate strictly on future, unseen hold-out data
+final_loss, final_accuracy = model.evaluate(X_test, y_test)
 
 ```
 
 ```
-Final Accuracy on Hold-out Set: 0.9960
+Epoch 8/50 - early stopping triggered, restoring best weights from Epoch 5.
+Final Loss on Hold-out Set: 0.1369
+Final Accuracy on Hold-out Set: 0.9838
 ```
 
 The features are being scaled with the StandardScaler and also the model was trained with a batch size of 32 and a 60-20-20 data split ratio. Specifically, the model consists of an LSTM layer with 64 units, followed by an output layer with a single unit, and it is compiled with the adam optimizer and binary cross-entropy loss function. Also, the sequence length is 10, meaning that each sequence will contain 10 transactions in sequential order, and the sequences are created so that each sequence contains transactions from a unique cardholder(cc_num) and the transactions are sorted by time. Also, early stopping is used to prevent overfitting and there is a seperate set that is used after the training, as a final evaluation of the model.
