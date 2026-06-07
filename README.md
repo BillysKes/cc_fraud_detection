@@ -288,10 +288,16 @@ Final Loss on Hold-out Set: 0.1369
 Final Accuracy on Hold-out Set: 0.9838
 ```
 
-The features are being scaled with the StandardScaler and also the model was trained with a batch size of 32 and a 60-20-20 data split ratio. Specifically, the model consists of an LSTM layer with 64 units, followed by an output layer with a single unit, and it is compiled with the adam optimizer and binary cross-entropy loss function. Also, the sequence length is 10, meaning that each sequence will contain 10 transactions in sequential order, and the sequences are created so that each sequence contains transactions from a unique cardholder(cc_num) and the transactions are sorted by time. Also, early stopping is used to prevent overfitting and there is a seperate set that is used after the training, as a final evaluation of the model.
+The dataset is divided using a strict chronological split of 70% Training, 15% Validation, and 15% Testing. The model consists of an LSTM layer with 64 units, followed by a Dense output layer with a sigmoid activation function, compiled using the Adam optimizer and binary cross-entropy loss.
 
+Sequences are generated so that each contains 10 chronological transactions per unique cardholder. Because we avoided synthetic oversampling to protect sequence integrity, the model relies on a dynamically calculated class_weight to aggressively penalize the network for missing fraudulent transactions.
 
-
+## 5.1 Learning Curves & Model Evaluation
+To ensure the LSTM was learning underlying patterns rather than memorizing the training data, the learning curves were plotted. The model successfully recognized underlying chronological behaviors without overfitting. The EarlyStopping callback functioned as intended, halting the training process at Epoch 8 once the validation loss began to diverge from the training loss, successfully restoring the optimal weights achieved at Epoch 5.
 
 <img width="1200" height="500" alt="cc_detection_acc_loss_plots" src="https://github.com/user-attachments/assets/653be486-d239-4c5b-8192-a94e3aeb514a" />
 
+
+6. Conclusions
+  
+By treating credit card fraud explicitly as a time-series sequencing problem, we successfully built an LSTM capable of analyzing a user's transaction history to flag anomalies. More importantly, by avoiding the pitfalls of synthetic data generation (ADASYN) and random splitting, we ensured our pipeline is strictly free from data leakage. The model achieved an honest 98.38% accuracy on strictly future, unseen data without overfitting, proving its viability for real-world deployment in financial environments.
