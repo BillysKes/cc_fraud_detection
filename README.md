@@ -186,7 +186,7 @@ def create_trans_amt_flag(data):
 This function creates the trans_amt_flag feature. For every transaction made by a credit card, it calculates the 30-days moving average of the amount of money were spent and it also calculates the standard deviation of the amount of money that were spent within the past 30 days. Then it flags every transaction where the difference of the amount of the transaction and the moving average amount is 2 times higher than the standard deviation.
 
 
-# 4. Adaptive Synthetic Sampling (ADASYN)
+# 4. Time-Series Integrity & Leakage Prevention
 
 In highly imbalanced datasets (~1% fraud), it is common to use synthetic oversampling techniques like SMOTE or ADASYN. However, synthetic interpolation destroys chronological reality. Averaging a fraudulent transaction from Monday and Friday generates a synthetic "hallucinated" transaction on Wednesday, which corrupts the temporal sequence an LSTM relies on to learn real human behavior.  
 
