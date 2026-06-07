@@ -298,6 +298,6 @@ To ensure the LSTM was learning underlying patterns rather than memorizing the t
 <img width="1200" height="500" alt="cc_detection_acc_loss_plots" src="https://github.com/user-attachments/assets/653be486-d239-4c5b-8192-a94e3aeb514a" />
 
 
-6. Conclusions
+#6. Conclusions
   
 By treating credit card fraud explicitly as a time-series sequencing problem, we successfully built an LSTM capable of analyzing a user's transaction history to flag anomalies. More importantly, by avoiding the pitfalls of synthetic data generation (ADASYN) and random splitting, we ensured our pipeline is strictly free from data leakage. The model achieved an honest 98.38% accuracy on strictly future, unseen data without overfitting, proving its viability for real-world deployment in financial environments.
